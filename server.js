@@ -231,8 +231,8 @@ server.on('upgrade', (req, socket, head) => {
   const origin = req.headers.origin || '';
   const url = new URL(req.url, 'http://x');
   let sameHost = false;
-  try { sameHost = Boolean(GAMES_DIR && origin && new URL(origin).host === req.headers.host); } catch {}
-  if (url.pathname !== '/ws' || !(ALLOWED_ORIGINS.has(origin) || sameHost)) { socket.write('HTTP/1.1 403 Forbidden\r\n\r\n'); return socket.destroy(); }
+  const allowOrigin = ALLOWED_ORIGINS.size === 0 || ALLOWED_ORIGINS.has('*') || ALLOWED_ORIGINS.has(origin) || sameHost;
+  if (url.pathname !== '/ws' || !allowOrigin) { socket.write('HTTP/1.1 403 Forbidden\r\n\r\n'); return socket.destroy(); }
   wss.handleUpgrade(req, socket, head, ws => wss.emit('connection', ws, req));
 });
 server.listen(PORT, () => log(`classroom server on :${PORT}`, GAMES_DIR ? `(serving games from ${GAMES_DIR})` : ''));
