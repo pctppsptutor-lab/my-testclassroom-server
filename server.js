@@ -140,9 +140,21 @@ function bindStudent(conn, room, playerId) {
 }
 function onClose(conn) {
   const room = conn.roomKey && rooms.get(conn.roomKey);
-  if (!room) return;
   if (conn.role === 'teacher' && room.teacherWs === conn.ws) { room.teacherWs = null; apply(room.state, { role: 'system' }, 'presence', { role: 'teacher', connected: false }); }
-  if (conn.role === 'student' && room.players.get(conn.playerId) === conn.ws) { room.players.delete(conn.playerId); apply(room.state, { role: 'system' }, 'presence', { playerId: conn.playerId, connected: false }); }
+  if (conn.role === 'student' && room.players.get(conn.playerId) === conn.ws) {
+    room.players.delete(conn.playerId);
+    room.secrets.delete(conn.playerId);
+    const idx = room.state.players.findIndex(p => p.playerId === conn.playerId);
+    if (idx !== -1) {
+      log('student kicked on disconnect', conn.playerId, room.state.players[idx].name);
+      room.state.players.splice(idx, 1);
+      room.state.revision++;
+      room.state.touchedAt = Date.now();
+      if (room.state.status === 'playing' && room.state.pace === 'self' && room.state.players.length && room.state.players.every(p => p.index >= (room.state.round?.content.questions.length || 0))) {
+        room.state.status = 'ended';
+      }
+    }
+  }
   publish(room);
 }
 
