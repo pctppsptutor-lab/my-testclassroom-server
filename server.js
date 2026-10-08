@@ -231,7 +231,15 @@ server.on('upgrade', (req, socket, head) => {
   const origin = req.headers.origin || '';
   const url = new URL(req.url, 'http://x');
   let sameHost = false;
-  const allowOrigin = ALLOWED_ORIGINS.size === 0 || ALLOWED_ORIGINS.has('*') || ALLOWED_ORIGINS.has(origin) || sameHost;
+  try { sameHost = Boolean(GAMES_DIR && origin && new URL(origin).host === req.headers.host); } catch {}
+  const cleanOrigin = origin.replace(/\/+$/, '');
+  const allowOrigin = ALLOWED_ORIGINS.size === 0
+    || ALLOWED_ORIGINS.has('*')
+    || ALLOWED_ORIGINS.has(origin)
+    || ALLOWED_ORIGINS.has(cleanOrigin)
+    || [...ALLOWED_ORIGINS].some(o => o.replace(/\/+$/, '') === cleanOrigin)
+    || sameHost;
+  log('ws upgrade', { origin, allow: allowOrigin, pathname: url.pathname });
   if (url.pathname !== '/ws' || !allowOrigin) { socket.write('HTTP/1.1 403 Forbidden\r\n\r\n'); return socket.destroy(); }
   wss.handleUpgrade(req, socket, head, ws => wss.emit('connection', ws, req));
 });
