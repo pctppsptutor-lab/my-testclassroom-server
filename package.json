@@ -1,0 +1,15 @@
+{
+  "name": "edupia-classroom-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "One WebSocket server for every classroom game built with build-classroom-game",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js --games ../games"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Quản trị nguồn câu hỏi</title>
+<style>
+ body{font:16px/1.5 system-ui,sans-serif;max-width:860px;margin:2rem auto;padding:0 1rem;color:#1d2433}
+ input,button{font:inherit;padding:.5rem .7rem;border-radius:8px;border:1px solid #b8c0cc}
+ button{background:#2457d6;color:#fff;border:0;cursor:pointer}
+ table{width:100%;border-collapse:collapse;margin:1rem 0}td,th{border-bottom:1px solid #e3e7ee;padding:.4rem;text-align:left;vertical-align:top}
+ .err{color:#b3261e}.ok{color:#1b7a3d}.row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}.row input{flex:1;min-width:220px}
+ .correct{font-weight:700;color:#1b7a3d}
+</style>
+</head>
+<body>
+<h1>Nguồn câu hỏi của các game</h1>
+<p>Chỉ dành cho chủ nội dung. Giáo viên đứng lớp không dùng trang này.</p>
+<div class="row"><input id="token" type="password" placeholder="Mã quản trị (ADMIN_TOKEN)" autocomplete="off"><button id="login" type="button">Mở</button></div>
+<p id="msg" role="status"></p>
+<section id="panel" hidden>
+ <table><thead><tr><th>Game</th><th>Link nguồn</th><th>Cập nhật</th></tr></thead><tbody id="list"></tbody></table>
+ <h2>Đặt / đổi nguồn</h2>
+ <div class="row"><input id="gameId" placeholder="gameId, ví dụ meo-leo-cau"><input id="url" placeholder="https://docs.google.com/document/d/.../edit"></div>
+ <div class="row"><button id="preview" type="button">Kiểm tra link</button><button id="save" type="button">Lưu nguồn</button></div>
+ <div id="out"></div>
+</section>
+<script src="/admin.js"></script>
+</body>
+</html>
